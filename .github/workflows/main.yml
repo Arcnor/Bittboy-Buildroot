@@ -1,0 +1,26 @@
+name: Bittboy_buildroot
+
+on: [push, pull_request]
+
+# TODO: Use composites?
+# TODO: Don't checkout all modules all the time?
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    container:
+      image: arcnor/retro-toolchains-buildroot
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: 'true'
+    - name: build
+      run: cd buildroot && make sdk
+      env:
+        BR2_JLEVEL: 0
+        FORCE_UNSAFE_CONFIGURE: 1
+    - uses: actions/upload-artifact@v2
+      with:
+        name: buildroot
+        path: buildroot/output/images/*
+
